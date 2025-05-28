@@ -16,31 +16,31 @@ package main
 import "C"
 
 import (
-    "unsafe"
-    "runtime"
+	"runtime"
+	"unsafe"
 )
 
 type Xdo struct {
-    x *C.xdo_t
+	x *C.xdo_t
 }
 
 type Window struct {
-    w C.Window
-    x *Xdo
+	w C.Window
+	x *Xdo
 }
 
 func xdo_finalizer(x *Xdo) {
-    C.xdo_free (x.x);
+	C.xdo_free(x.x)
 }
 
 func NewXdo() (*Xdo, bool) {
-    x := C.xdo_new (nil);
-    if x == nil {
-      return nil, false
-    }
-    r := &Xdo{x};
-    runtime.SetFinalizer(r, xdo_finalizer);
-    return r, true;
+	x := C.xdo_new(nil)
+	if x == nil {
+		return nil, false
+	}
+	r := &Xdo{x}
+	runtime.SetFinalizer(r, xdo_finalizer)
+	return r, true
 }
 
 func (x *Xdo) free() {
@@ -51,27 +51,27 @@ func (x *Xdo) free() {
 }
 
 func (x *Xdo) GetFocusedWindow() Window {
-    window := C.Window(0);
-    C.xdo_get_focused_window_sane(x.x, &window)
-    return Window{window, x};
+	window := C.Window(0)
+	C.xdo_get_focused_window_sane(x.x, &window)
+	return Window{window, x}
 }
 
 func (w *Window) GetName() string {
-    var name_ret        *C.uchar;
-    var name_len_ret    C.int;
-    var whatever        C.int;
-    C.xdo_get_window_name(w.x.x, w.w, &name_ret, &name_len_ret, &whatever);
-    str := C.GoBytes(unsafe.Pointer(name_ret), name_len_ret);
-    C.free(unsafe.Pointer(name_ret));
-    return string(str);
+	var name_ret *C.uchar
+	var name_len_ret C.int
+	var whatever C.int
+	C.xdo_get_window_name(w.x.x, w.w, &name_ret, &name_len_ret, &whatever)
+	str := C.GoBytes(unsafe.Pointer(name_ret), name_len_ret)
+	C.free(unsafe.Pointer(name_ret))
+	return string(str)
 }
 
 func current_window() string {
-	x,e := NewXdo()
+	x, e := NewXdo()
 	if !e {
 		return ""
 	}
-		
+
 	w := x.GetFocusedWindow()
 	n := w.GetName()
 	x.free()
