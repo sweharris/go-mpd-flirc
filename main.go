@@ -40,9 +40,9 @@ func main() {
 			case "KEY_DOT", "KEY_F": // skip forward
 				log.Println("skip", process(skip_forward))
 			// These next three keys are local kludges
-			case "KEY_1": // start Kodi
+			case "KEY_ESC": // start Kodi
 				log.Println("kodi", process(kodi))
-			case "KEY_2": // start Cantata
+			case "KEY_E": // start Cantata
 				log.Println("cantata", process(cantata))
 			case "KEY_I": // Toggle Cantata info
 				log.Println("cantata info", process(cantata_info))
