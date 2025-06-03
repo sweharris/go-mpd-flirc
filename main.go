@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"os/exec"
+	"syscall"
 
 	"github.com/holoplot/go-evdev"
 )
@@ -35,9 +37,44 @@ func main() {
 				log.Println("replay", process(skip_back))
 			case "KEY_DOT", "KEY_F": // skip forward
 				log.Println("skip", process(skip_forward))
+			// These next three keys are local kludges
+			case "KEY_1": // start Kodi
+				log.Println("kodi", process(kodi))
+			case "KEY_2": // start Cantata
+				log.Println("cantata", process(cantata))
+			case "KEY_3": // Toggle Cantata info
+				log.Println("cantata info", process(cantata_info))
 			default:
 				log.Println("Ignored", e.CodeName())
 			}
 		}
 	}
+}
+
+func run_cmd(cmd, ret string) string {
+	child := exec.Command(cmd)
+	child.SysProcAttr = &syscall.SysProcAttr{
+		Setpgid: true,
+	}
+	err := child.Start()
+	if err != nil {
+		return err.Error()
+	}
+	return ret
+}
+
+// This will force pause any music and start Kodi
+func kodi() string {
+	conn.Pause(true)
+	return run_cmd("kodi", "Kodi started")
+}
+
+// This will start cantata
+func cantata() string {
+	return run_cmd("cantata", "Cantata started")
+}
+
+// This will toggle cantata info screen
+func cantata_info() string {
+	return run_cmd("cantata_info", "Info toggled")
 }
