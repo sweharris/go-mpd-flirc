@@ -44,7 +44,7 @@ func main() {
 				log.Println("kodi", process(kodi))
 			case "KEY_2": // start Cantata
 				log.Println("cantata", process(cantata))
-			case "KEY_3": // Toggle Cantata info
+			case "KEY_I": // Toggle Cantata info
 				log.Println("cantata info", process(cantata_info))
 			default:
 				log.Println("Ignored", e.CodeName())
