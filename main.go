@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os/exec"
+	"os/signal"
 	"syscall"
 
 	"github.com/holoplot/go-evdev"
@@ -15,6 +16,7 @@ func main() {
 		die(err)
 	}
 
+	signal.Ignore(syscall.SIGCHLD)
 	// Now loop forever reading from the Flirc
 	for {
 		e, err := dev.ReadOne()
