@@ -126,7 +126,7 @@ func next() string {
 }
 
 func skip_forward() string {
-	conn.SeekCur(time.Duration(30*time.Second), true)
+	conn.SeekCur(time.Duration(5*time.Second), true)
 	return get_play()
 }
 
